@@ -20,7 +20,7 @@ import entity.Planet;
 public class PlanetService {
 	
 	private static final String CHARSET_UTF8 = ";charset=utf-8";
-	private static PlanetDAO planetDAO;
+	private PlanetDAO planetDAO;
 	
 	@PostConstruct
 	private void ini(){
