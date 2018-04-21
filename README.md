@@ -1,6 +1,6 @@
 # Star Wars Data Service
  
-### How to install in Ubuntu 16.04 
+## Deploy (Ubuntu 16.04) 
 
 `sudo apt-get update`
 
@@ -42,7 +42,20 @@
 
 [http://localhost:8080/StarWarsDataService](http://localhost:8080/StarWarsDataService)
 
-- Execute the JUnit test
+## JUnit Test
+
+- Intall dependences
+
+`sudo apt-get install -y default-jre junit4 maven`
+
+- Compile project
+
+`cd StarWarsDataService`
+
+`mvn install`
+
+
+
 
 
 

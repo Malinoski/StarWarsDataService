@@ -77,8 +77,6 @@ public class PlanetDAO {
 		int lastPlanetIndex = getLastPlanetIndex();
 		int nextPlanetIndex = lastPlanetIndex + 1;
 
-		//System.out.println("nextPlanetIndex " + nextPlanetIndex);
-		//String count = String.valueOf(countFilmsFromPlanet(planet.getName()));
 		BasicDBObject mongoDbObject = new BasicDBObject("_id", nextPlanetIndex)
 				.append("name", planet.getName())
 				.append("climate", planet.getClimate())
@@ -119,13 +117,12 @@ public class PlanetDAO {
 				// System.out.println(cursor.next().toJson());
 				// System.out.println(cursor.next().toMap());
 				Map<?, ?> map = cursor.next().toMap();
-
 				planet = new Planet();
-				planet.setId((int) map.get("_id"));
+				planet.setId((Integer) map.get("_id"));
 				planet.setName((String) map.get("name"));
 				planet.setClimate((String) map.get("climate"));
 				planet.setTerrain((String) map.get("terrain"));
-				planet.setCountFilms((int)map.get("countFilms"));
+				planet.setCountFilms((Integer) map.get("countFilms"));
 				
 				planets.add(planet);
 
@@ -150,8 +147,7 @@ public class PlanetDAO {
 			if (mongoDbObject != null) {
 				Map<?, ?> map = mongoDbObject.toMap();
 				planet = new Planet();
-				planet = new Planet();
-				planet.setId((int) map.get("_id"));
+				planet.setId((Integer) map.get("_id"));
 				planet.setName((String) map.get("name"));
 				planet.setClimate((String) map.get("climate"));
 				planet.setTerrain((String) map.get("terrain"));
