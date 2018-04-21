@@ -37,3 +37,9 @@
 `sudo cp StarWarsDataService/StarWarsDataService.war /var/lib/tomcat7/webapps/`
 
 `sudo service tomcat7 restart`
+
+- See the REST services specification at
+
+[http://localhost:8080/StarWarsDataService](http://localhost:8080/StarWarsDataService)
+
+

@@ -1,0 +1,210 @@
+{
+	"swagger": "2.0",
+	"info": {
+		"version": "0.0.1-SNAPSHOT",
+		"title": "StarWarsDataServer"
+	},
+	"host": "example.com",
+	"basePath": "/",
+	"schemes": [
+		"http"
+	],
+	"paths": {
+		"/planets": {
+			"get": {
+				"consumes": [],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"headers": {
+							
+						},
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Planet"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"consumes": [
+					"application/json;charset=utf-8"
+				],
+				"produces": [
+					"text/plain"
+				],
+				"parameters": [
+					{
+						"name": "body",
+						"in": "body",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Planet"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"headers": {
+							
+						},
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		},
+		"/planets/search/name={name}": {
+			"get": {
+				"consumes": [
+					"text/plain"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "name",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"headers": {
+							
+						},
+						"schema": {
+							"type": "array",
+							"items": {
+								"$ref": "#/definitions/Planet"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/planets/{id}": {
+			"get": {
+				"consumes": [
+					"text/plain"
+				],
+				"produces": [
+					"application/json"
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"headers": {
+							
+						},
+						"schema": {
+							"$ref": "#/definitions/Planet"
+						}
+					}
+				}
+			},
+			"put": {
+				"consumes": [
+					"application/json;charset=utf-8"
+				],
+				"produces": [
+					"text/plain"
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "integer"
+					},
+					{
+						"name": "body",
+						"in": "body",
+						"required": true,
+						"schema": {
+							"$ref": "#/definitions/Planet"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"headers": {
+							
+						},
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			},
+			"delete": {
+				"consumes": [
+					"text/plain"
+				],
+				"produces": [
+					"text/plain"
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "OK",
+						"headers": {
+							
+						},
+						"schema": {
+							"type": "string"
+						}
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"Planet": {
+			"properties": {
+				"id": {
+					"type": "number"
+				},
+				"name": {
+					"type": "string"
+				},
+				"climate": {
+					"type": "string"
+				},
+				"terrain": {
+					"type": "string"
+				},
+				"countFilms": {
+					"type": "number"
+				}
+			}
+		}
+	}
+}

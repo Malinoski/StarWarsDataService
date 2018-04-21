@@ -29,9 +29,8 @@ public class PlanetService {
 	
 	/**
 	 * Operation List all planets
-	 * 
-	 * @param None
-	 * @return json array (ex.: [{"name": "PlanetA"},{"name": "PlanetB"}]) or null for error
+	 * Return json array (ex.: [{"name": "PlanetA"},{"name": "PlanetB"}]) or null for error
+	 * @return List<Planet>
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
