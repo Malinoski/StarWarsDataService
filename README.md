@@ -42,4 +42,8 @@
 
 [http://localhost:8080/StarWarsDataService](http://localhost:8080/StarWarsDataService)
 
+- Execute the JUnit test
+
+
+
 
