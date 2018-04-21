@@ -1,6 +1,8 @@
 # Star Wars Data Service
 
-Follow all the steps to install and run Star Wars Data Service. These steps was tested in a Ubuntu 16.04 virtual machine (VirtualBox 5.1 - make sure the vm has bridge network and allow all in promiscuous mode)
+Follow all the steps to install, test and deploy Star Wars Data Service. 
+
+These steps was tested in Ubuntu 16.04.4 LTS Xenial, installed in a virtual machine from VirtualBox (Virtual machine in Bridge network and allow all in promiscuous mode).
 
 ### Install requirements
 
