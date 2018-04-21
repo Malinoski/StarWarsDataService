@@ -22,5 +22,12 @@ public class SwapiHelperTest extends JerseyTest{
 		int count = helper.getFilmsCountFromPlanet("Alderaan");
 		Assert.assertTrue(count==2); // Alderaan planet appear in 2 films		
 	}
+	
+	@Test
+	public void testSwapiSearchFilmCountFromUnknown() {
+		SwapiHelper helper = new SwapiHelper();
+		int count = helper.getFilmsCountFromPlanet("Unknown");
+		Assert.assertTrue(count==0); // Alderaan planet appear in 2 films		
+	}
 
 }
