@@ -28,9 +28,8 @@ public class PlanetService {
 	}
 	
 	/**
-	 * Operation List all planets
-	 * Return json array (ex.: [{"name": "PlanetA"},{"name": "PlanetB"}]) or null for error
-	 * @return List<Planet>
+	 * List all planets
+	 * @return Return json array of planets
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -41,8 +40,8 @@ public class PlanetService {
 	
 	/**
 	 * Operation: Get one planet
-	 * @param PLanet ID
-	 * @return json (ex.: {"name": "PlanetA"}) or null for error
+	 * @param PLanet id
+	 * @return Planet
 	 */
 	@GET
 	@Path("/{id}")
@@ -54,7 +53,8 @@ public class PlanetService {
 	}
 	
 	/**
-	 * Operation: Include one. Uses POST for non-idempotency (many requests CAN affect each other)
+	 * Include one planet by non-idempotency POST. 
+	 * Many requests CAN affect each other, and for this reason, this service consumes the static method PlanetDAO.addPlanet.
 	 * @param Body param, ex.: { "name": "PlanetName", "climate":"ClimateName", "terrain":"TerrainName" }
 	 * @return Planet ID
 	 */
@@ -67,12 +67,9 @@ public class PlanetService {
 	}
 	
 	/**
-	 * Operation: Edit one Planet. Uses PUT for idempotency (many requests not affect each other).
-	 * Modify the element according to URL id (ex.: planets/1) and the body json (ex.: {"name": "PlanetName","climate":"NewClimate"}). 
-	 * If the json has the id (ex.: {"_id":99, "name": "PlanetName","climate":"NewClimate"}), the URL id must be equals (ex.: planets/99).
-	 * 
-	 * @param Body param, ex.: {"name": "PlanetNameA", "climate":"ClimateNovo3", "terrain":"TerrainA" }
-	 * @return "OK", "ERROR: [message error]" or "WARNING: [message]"
+	 * Edit a planet by id. 
+	 * @param The planet id and the planet json
+	 * @return Returns "OK", "ERROR [message]" or "WARNING [message]"
 	 */
 	@PUT
 	@Path("/{id}")
@@ -84,9 +81,9 @@ public class PlanetService {
 	}
 	
 	/**
-	 * Operation: Delete one
-	 * @param By URL, ex.: /planetId
-	 * @return "OK", "ERROR: [message error]" or "WARNING: [message]"
+	 * Delete a planet by id. 
+	 * @param The planet id
+	 * @return Returns "OK", "ERROR [message]" or "WARNING [message]"
 	 */
 	@DELETE
 	@Path("/{id}")
@@ -97,10 +94,9 @@ public class PlanetService {
 	}
 	
 	/**
-	 * Search by exactly planet name
-	 * 
-	 * @param Planet name 
-	 * @return json array (ex.: [{"id":1,"name": "PlanetA"},{"id":1,"name": "PlanetA"}]) or null for error
+	 * List planets by name (can exist more than on planet with the same name, but different by id)
+	 * @param The planet name
+	 * @return Returns a list of planet
 	 */
 	@GET
 	@Path("/search/name={name}")

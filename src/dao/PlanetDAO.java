@@ -35,31 +35,87 @@ public class PlanetDAO {
 
 	}
 
+	/**
+	 * The method create the planet index document in MondoDB.
+	 * This document was designed to store the last planet id and to be incremented in every planet insertion.
+	 */
 	private void createPlanetIndex(MongoDBConfig mongoDBConfig) {
+		
 		collectionIndex = mongoDBConfig.getCollection("PlanetsIndex");
 		try {
+			
+			// Try to get the last id
 			BasicDBObject mongoDbObject = collectionIndex.find(eq("_id", "productid")).first();
 
+			// If not, create the first id 
 			if (mongoDbObject == null) {
 				// System.out.println("Create PlanetsIndex");
 				mongoDbObject = new BasicDBObject("_id", "productid")
 						.append("sequence_value", 0);
 				collectionIndex.insertOne(mongoDbObject);
 
-			} else {
-				// System.out.println("DONT create PlanetsIndex");
-			}
+			} 
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Get the last planetIndex
+	 * @return Returns the last planet id > 0
+	 */
 	public static int getLastPlanetIndex() {
 		BasicDBObject mongoDbObject = collectionIndex.find(eq("_id", "productid")).first();
 		return (int) mongoDbObject.get("sequence_value");
 	}
 
+	/**
+	 * Add a planet
+	 * This method must be static, because when a planet is added, the planet index must be incremented.
+	 * For this reason, all the queue request (nem planets to be added) must wait the new id.
+	 * @param The new planet
+	 * @return Returns a new planet id
+	 */
+	public static int addPlanet(Planet planet) {
+
+		// Create the planet object
+		int lastPlanetIndex = getLastPlanetIndex();
+		int nextPlanetIndex = lastPlanetIndex + 1;
+		BasicDBObject mongoDbObject = new BasicDBObject("_id", nextPlanetIndex)
+				.append("name", planet.getName())
+				.append("climate", planet.getClimate())
+				.append("terrain", planet.getTerrain())
+				.append("countFilms", countFilmsFromPlanet(planet.getName()));
+
+		try {
+			
+			// Insert the new planet in db
+			collection.insertOne(mongoDbObject);
+			
+			// Update the planet id in collectionIndex
+			if (updateLastPlanetIndex(nextPlanetIndex)) {
+				
+				// Return the new planet id
+				return nextPlanetIndex;
+			} else {
+				
+				// Return ERROR
+				return -1;
+			}
+		} catch (Exception ex) {
+			
+			// Return ERROR
+			return -1;
+		}
+
+	}
+	
+	/**
+	 * Update the last planet index in MongoDB
+	 * @param New planet id
+	 * @return Returns a confirmation (true/false)
+	 */
 	public static boolean updateLastPlanetIndex(int nextPlanetIndex) {
 		BasicDBObject mongoDbObject = new BasicDBObject("_id", "productid").append("sequence_value", nextPlanetIndex);
 		UpdateResult result = collectionIndex.updateOne(eq("_id", "productid"), new Document("$set", mongoDbObject));
@@ -70,43 +126,22 @@ public class PlanetDAO {
 			return false;
 		}
 	}
-
-	public static int addPlanet(Planet planet) {
-
-		// System.out.println("Adding planet: " + planet.getName());
-		int lastPlanetIndex = getLastPlanetIndex();
-		int nextPlanetIndex = lastPlanetIndex + 1;
-
-		BasicDBObject mongoDbObject = new BasicDBObject("_id", nextPlanetIndex)
-				.append("name", planet.getName())
-				.append("climate", planet.getClimate())
-				.append("terrain", planet.getTerrain())
-				.append("countFilms", countFilmsFromPlanet(planet.getName()));
-
-		try {
-			collection.insertOne(mongoDbObject);
-			if (updateLastPlanetIndex(nextPlanetIndex)) {
-
-				return nextPlanetIndex;
-			} else {
-				return -1;
-			}
-		} catch (MongoWriteException ex) {
-			// ex.printStackTrace();
-			// result = "WARNING: DAO could not add an existing planet";
-			return -1;
-		}
-
-	}
 	
+	/**
+	 * This method check if a planet apper in a film (https://swapi.co/)
+	 * @param The planet name (must be exactly)
+	 * @return Return >= 0
+	 */
 	public static int countFilmsFromPlanet(String planetName) {
 		SwapiHelper helper = new SwapiHelper();
 		return helper.getFilmsCountFromPlanet(planetName);
 	}
 
+	/**
+	 * Get all planets
+	 * @return A list of planets
+	 */
 	public List<Planet> listPlanets() {
-
-		// System.out.println("List planets");
 
 		MongoCursor<BasicDBObject> cursor = collection.find().iterator();
 		List<Planet> planets = new ArrayList<Planet>();
@@ -114,8 +149,7 @@ public class PlanetDAO {
 
 		try {
 			while (cursor.hasNext()) {
-				// System.out.println(cursor.next().toJson());
-				// System.out.println(cursor.next().toMap());
+				
 				Map<?, ?> map = cursor.next().toMap();
 				planet = new Planet();
 				planet.setId((Integer) map.get("_id"));
@@ -137,9 +171,13 @@ public class PlanetDAO {
 		return planets;
 	}
 
+	/**
+	 * Get a planet by id
+	 * @param The planet id
+	 * @return Returns the planet or null if it does not find
+	 */
 	public Planet getPlanet(int id) {
 
-		// System.out.println("Get planet id=" + id);
 		Planet planet = null;
 		try {
 			BasicDBObject mongoDbObject = collection.find(eq("_id", id)).first();
@@ -162,6 +200,11 @@ public class PlanetDAO {
 
 	}
 
+	/**
+	 * Edit a planet by id. 
+	 * @param The planet id and the planet object
+	 * @return Returns "OK", "ERROR [message]" or "WARNING [message]"
+	 */
 	public String editPlanet(Planet planet, int id) {
 
 		// System.out.println("Edit " + planet.getId() + " " + id);
@@ -196,6 +239,11 @@ public class PlanetDAO {
 		return response;
 	}
 
+	/**
+	 * Delete a planet by id. 
+	 * @param The planet id
+	 * @return Returns "OK", "ERROR [message]" or "WARNING [message]"
+	 */
 	public String deletePlanet(String id) {
 		// System.out.println("Delete planet "+id);
 		String response = "";
@@ -214,6 +262,11 @@ public class PlanetDAO {
 		return response;
 	}
 	
+	/**
+	 * List planets by name (can exist more than on planet with the same name, but different by id)
+	 * @param The planet name
+	 * @return Returns a list of planet
+	 */
 	public List<Planet> listPlanetsByName(String name){
 		
 		// System.out.println("listPlanetsByName " + name);

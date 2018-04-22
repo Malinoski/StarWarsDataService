@@ -17,6 +17,7 @@ public class SwapiHelper {
 		}
 	}
 
+	// This method check if a planet apper in a film in https://swapi.co/
 	public int getFilmsCountFromPlanet(String name) {
 
 		int response = 0;

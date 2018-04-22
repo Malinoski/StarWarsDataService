@@ -24,7 +24,7 @@ public class TestPlanetService extends JerseyTest {
 	}
 	
 	@Test
-	public void testAllPlanetServicesWithAddSelectEditListDelete() {
+	public void testPlanetSimulationForAddSelectEditListDelete() {
 		
 		String name = generatePlanetTestName();
 		
