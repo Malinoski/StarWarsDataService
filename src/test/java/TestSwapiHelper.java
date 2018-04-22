@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import lib.SwapiHelper;
 
-public class SwapiHelperTest extends JerseyTest{
+public class TestSwapiHelper extends JerseyTest{
 
 	@Override
 	protected Application configure() {

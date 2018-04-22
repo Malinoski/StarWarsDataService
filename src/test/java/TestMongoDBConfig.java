@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import db.MongoDBConfig;
 
-public class MongoDBConfigTest {
+public class TestMongoDBConfig {
 
 	@Test
 	public void testNewMongoDBConfig() {

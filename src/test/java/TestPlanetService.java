@@ -16,7 +16,7 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
-public class PlanetServiceTest extends JerseyTest {
+public class TestPlanetService extends JerseyTest {
 
 	@Override
 	protected Application configure() {
