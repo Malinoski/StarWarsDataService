@@ -46,7 +46,7 @@ Note: Tests are executed by JerseyTest in all Jersey REST services
 
 `sudo service tomcat7 restart`
 
-- See the REST services documentation at:
+- See the REST services documentation at (change 'HOST' with your host deploy environment):
 
-[http://localhost:8080/StarWarsDataService](http://localhost:8080/StarWarsDataService)
+http://[HOST]:8080/StarWarsDataService
 
