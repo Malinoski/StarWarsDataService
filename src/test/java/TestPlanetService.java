@@ -24,39 +24,59 @@ public class TestPlanetService extends JerseyTest {
 	}
 	
 	@Test
-	public void testAddSelectEditListDeletePlanet() {
+	public void testAllPlanetServicesWithAddSelectEditListDelete() {
 		
 		String name = generatePlanetTestName();
 		
-		// Uses REST service: addPlanet
+		// Add a planet (with a ramdom name) and check if the planet has a valid id (between 0 and N
 		int id = addUniquePlanet(name, "SomeClimate","SomeTerrain");
+		Assert.assertTrue(id>-1);
 		
-		// Uses REST service: getPlanet
-		getPlanetById(id);
+		// Get the planet by id and check if the given id is equal to returned id
+		Assert.assertTrue(id == getPlanetById(id).getId());
 		
-		// Uses REST service: listPlanetsByName
-		listOnePlanetByName(name);
+		// List all planets with the given name (the test planet). This test must return only ONE planet
+		Assert.assertTrue(findPlanetByName(name).size()==1);
 		
-		// Uses REST service: listPlanets service
-		listOneOrMorePlanets();
+		// Check if one or more planets are returned
+		Assert.assertTrue(listPlanets().size()>0);
 		
-		// Uses REST service: editPlanet
-		editExistentPlanetTest(id);
+		// Edit a planet by id and check if was done
+		Assert.assertTrue(editPlanet(id).equals("OK"));
 		
-		// Uses REST service: deletePlanet
-		deleteExistentPlanet(id);
+		// Edit a planet where dont exist (id > -1)
+		Assert.assertTrue(editPlanet(-1).startsWith("WARNING"));
 		
-		// Uses REST service: deletePlanet
-		deleteNonExistentPlanet(id);
+		// Delete the planet and check if was done
+		Assert.assertTrue(deletePlanet(id).equals("OK"));
 		
-		// Uses REST service: getPlanet
-		getNonexistentPlanet(id);
+		// Delete a planet where dont exist and check if was dont (assert false)
+		Assert.assertTrue(deletePlanet(id).startsWith("WARNING"));
+		
+		// Get the planet where dont exist and check is null
+		Assert.assertNull(getPlanetById(id));
 	}
 	
-	public List<Planet> listOnePlanetByName(String name) {
-		List<Planet> planets = target("planets/search/name="+name).request(MediaType.APPLICATION_JSON).get(new GenericType<List<Planet>>() {});
-		Assert.assertTrue(planets.size()==1);
-		return planets;	
+	public String generateStringJsonTest(String name, String climate, String terrain) {
+		return "{ \"name\": \"" + name + "\", \"climate\":\""+climate+"\", \"terrain\":\""+terrain+"\" }";
+	}
+	
+	public int addUniquePlanet(String name, String climate, String terrain) {
+		
+		// Data request
+		String json = generateStringJsonTest(name, climate, terrain);
+		String response = target("planets/").request().post(Entity.entity(json, MediaType.APPLICATION_JSON),String.class);
+		
+		// Check response
+		int newId = -1;
+		try {
+			newId = Integer.parseInt(response);
+		}catch(NumberFormatException ex) {
+			ex.printStackTrace();			
+		}
+		
+		return newId;
+		
 	}
 	
 	public String generatePlanetTestName() {
@@ -71,59 +91,25 @@ public class TestPlanetService extends JerseyTest {
 		return planets;	
 	}
 	
-	
-	public int addUniquePlanet(String name, String climate, String terrain) {
-		
-		// Request
-		String json = "{ \"name\": \"" + name + "\", \"climate\":\""+climate+"\", \"terrain\":\""+terrain+"\" }";
-		String response = target("planets/").request().post(Entity.entity(json, MediaType.APPLICATION_JSON),String.class);
-		// Check response
-		int newId = -1;
-		try {
-			newId = Integer.parseInt(response);
-		}catch(NumberFormatException ex) {
-			ex.printStackTrace();			
-		}
-		
-		// Check if element was inluded
-		Assert.assertTrue(newId>-1);
-		return newId;
-		
-	}
-	
-	private void editExistentPlanetTest(int id) {
-		// Request
-		String json = "{ \"name\": \"NewPlanetName\", \"climate\":\"NewClimate\", \"terrain\":\"NewTerrain\" }";
+	private String editPlanet(int id) {
+		String json = generateStringJsonTest("NewPlanetName", "NewClimate", "NewTerrain");
 		String response = target("planets/"+id).request().put(Entity.entity(json, MediaType.APPLICATION_JSON),String.class);
-		
-		Assert.assertTrue(response.equals("OK"));	
-		
+		return response;
 	}
 	
-	public void deleteExistentPlanet(int id) {		
-		String response = target("planets/"+id).request().delete(String.class);
-		Assert.assertTrue(response.equals("OK"));
+	public String deletePlanet(int id) {		
+		String response = target("planets/"+id).request().delete(String.class);		
+		return response;
 	}
 	
-	public void deleteNonExistentPlanet(int id) {		
-		String response = target("planets/"+id).request().delete(String.class);
-		Assert.assertFalse(response.equals("OK"));
-	}
-	
-	public void getPlanetById(int id) {		
+	public Planet getPlanetById(int id) {		
 		Planet result = target("planets/"+id).request(MediaType.APPLICATION_JSON).get(new GenericType<Planet>() {});
-		Assert.assertTrue(id == result.getId());		
+		return result;		
 	}
 	
-	public void getNonexistentPlanet(int id) {
-		String idString = String.valueOf(id);
-		Planet result = target("planets/"+idString).request(MediaType.APPLICATION_JSON).get(new GenericType<Planet>() {});
-		Assert.assertNull(result);			
-	}
-	
-	public void listOneOrMorePlanets() {
+	public List<Planet> listPlanets() {
 		List<Planet> result = target("planets").request(MediaType.APPLICATION_JSON).get(new GenericType<List<Planet>>() {});
-		Assert.assertTrue(result.size()>0);
+		return result;
 	}
 	
 }

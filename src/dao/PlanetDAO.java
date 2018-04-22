@@ -204,7 +204,7 @@ public class PlanetDAO {
 			if(result.getDeletedCount()==1) {
 				response = "OK";
 			}else {
-				response = "Warning: DAO could not delete planet " + id + ". Maybe the planet dont exist";
+				response = "WARNING: DAO could not delete planet " + id + ". Maybe the planet dont exist";
 			}
 			
 		} catch (Exception e) {
