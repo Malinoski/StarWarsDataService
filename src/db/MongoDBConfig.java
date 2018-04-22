@@ -39,6 +39,10 @@ public class MongoDBConfig {
 		return database;
 	}
 	
+	public MongoClient getMongoClient() {
+		return mongoClient;
+	}
+	
 	
 	
 }
